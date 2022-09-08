@@ -1,10 +1,10 @@
 import {describe, expect, it, mock} from "../deps.test.ts";
 
 function createObservable() {
-    let cb = undefined;
+    const callbacks = [];
     return {
-        register(callback) { cb = callback },
-        notify() { cb() }
+        register(callback) { callbacks.push(callback) },
+        notify() { callbacks.forEach(cb => cb()) }
     };
 }
 
@@ -25,5 +25,18 @@ describe('observer', () => {
         observable.register(fakeCallback);
 
         expect(fakeCallback).not.toHaveBeenCalled();
+    });
+
+    it('allows registering multiple callback', () => {
+        const observable = createObservable();
+        const fakeCallback = mock.fn();
+        observable.register(fakeCallback);
+        const fakeCallback2 = mock.fn();
+        observable.register(fakeCallback2);
+
+        observable.notify()
+
+        expect(fakeCallback).toHaveBeenCalled();
+        expect(fakeCallback2).toHaveBeenCalled();
     });
 });
