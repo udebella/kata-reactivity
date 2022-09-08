@@ -1,20 +1,5 @@
 import {describe, expect, it, mock} from "../deps.test.ts";
-
-function createProxy(initialVariable, proxyHandler) {
-    const copy = {...initialVariable};
-    return Object.keys(initialVariable)
-        .reduce((proxy, key) => Object.defineProperty(proxy, key, {
-            get: () => {
-                proxyHandler().get();
-                return copy[key];
-            },
-            set: (newValue) => {
-                proxyHandler().set(newValue);
-                copy[key] = newValue;
-            },
-            enumerable: true
-        }), {});
-}
+import {createProxy} from "./proxy.js";
 
 describe('proxy', () => {
     it('calls proxy handler when accessing value from proxy', () => {
