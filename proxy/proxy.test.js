@@ -1,16 +1,16 @@
 import {describe, expect, it, mock} from "../deps.test.ts";
 
 function createProxy(initialVariable, proxyHandler) {
-    const coucou = {...initialVariable};
+    const copy = {...initialVariable};
     return Object.keys(initialVariable)
         .reduce((proxy, key) => Object.defineProperty(proxy, key, {
             get: () => {
                 proxyHandler().get();
-                return coucou[key];
+                return copy[key];
             },
             set: (newValue) => {
                 proxyHandler().set();
-                coucou[key] = newValue;
+                copy[key] = newValue;
             },
             enumerable: true
         }), {});
@@ -45,7 +45,7 @@ describe('proxy', () => {
         expect(fakeGet).toHaveBeenCalled();
     });
 
-    it('calls proxy handler when accessing value from proxy 3', () => {
+    it('does not add properties on proxyfied objects', () => {
         const fakeGet = mock.fn();
         function proxyHandler() {
             return {
@@ -82,7 +82,7 @@ describe('proxy', () => {
     });
 
     describe('set', () => {
-        it('calls proxy handler when accessing value from proxy', () => {
+        it('calls proxy handler when modifying value on proxy', () => {
             const fakeSet = mock.fn();
             function proxyHandler() {
                 return {
@@ -96,7 +96,7 @@ describe('proxy', () => {
             expect(fakeSet).toHaveBeenCalled();
         })
 
-        it('toto', () => {
+        it('updates proxy value when modifying property', () => {
             const fakeSet = mock.fn();
             function proxyHandler() {
                 return {
@@ -111,7 +111,7 @@ describe('proxy', () => {
             expect(proxy).toEqual({ a: 21 });
         });
 
-        it('toto 2', () => {
+        it('does not update initial value when proxy is modified', () => {
             const fakeSet = mock.fn();
             function proxyHandler() {
                 return {
