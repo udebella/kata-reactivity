@@ -1,8 +1,8 @@
 import {describe, expect, it, mock} from "../deps.test.ts";
 
-function createProxy(param, proxyHandler) {
-    const coucou = {...param};
-    return Object.keys(param)
+function createProxy(initialVariable, proxyHandler) {
+    const coucou = {...initialVariable};
+    return Object.keys(initialVariable)
         .reduce((proxy, key) => Object.defineProperty(proxy, key, {
             get: () => {
                 proxyHandler().get();
