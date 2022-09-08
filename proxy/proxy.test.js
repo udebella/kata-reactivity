@@ -9,7 +9,7 @@ function createProxy(initialVariable, proxyHandler) {
                 return copy[key];
             },
             set: (newValue) => {
-                proxyHandler().set();
+                proxyHandler().set(newValue);
                 copy[key] = newValue;
             },
             enumerable: true
@@ -93,7 +93,7 @@ describe('proxy', () => {
 
             proxy.a = 21;
 
-            expect(fakeSet).toHaveBeenCalled();
+            expect(fakeSet).toHaveBeenCalledWith(21);
         })
 
         it('updates proxy value when modifying property', () => {
