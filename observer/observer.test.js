@@ -1,12 +1,5 @@
 import {describe, expect, it, mock} from "../deps.test.ts";
-
-function createObservable() {
-    const callbacks = [];
-    return {
-        register(callback) { callbacks.push(callback) },
-        notify() { callbacks.forEach(cb => cb()) }
-    };
-}
+import {createObservable} from "./observer.js";
 
 describe('observer', () => {
     it('calls registered callback when observable notifies', () => {
