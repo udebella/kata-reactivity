@@ -10,7 +10,7 @@ function createProxy(param, proxyHandler) {
 }
 
 describe('proxy', () => {
-    it('works', () => {
+    it('calls proxy handler when accessing value from proxy', () => {
         const fakeGet = mock.fn();
         function proxyHandler() {
             return {
@@ -24,7 +24,7 @@ describe('proxy', () => {
         expect(fakeGet).toHaveBeenCalled();
     });
 
-    it('works 2', () => {
+    it('does not call proxy handler when property is not accessed', () => {
         const fakeGet = mock.fn();
         function proxyHandler() {
             return {
@@ -36,7 +36,7 @@ describe('proxy', () => {
         expect(fakeGet).not.toHaveBeenCalled();
     });
 
-    it('works 3', () => {
+    it('gives the value of the original object from the proxy', () => {
         const fakeGet = mock.fn();
         function proxyHandler() {
             return {
