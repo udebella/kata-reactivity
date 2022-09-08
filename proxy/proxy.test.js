@@ -5,6 +5,10 @@ function createProxy(param, proxyHandler) {
         get a() {
             proxyHandler().get();
             return param.a;
+        },
+        get b() {
+            proxyHandler().get();
+            return param.b;
         }
     };
 }
@@ -20,6 +24,20 @@ describe('proxy', () => {
         const proxy = createProxy({ a: 1 }, proxyHandler);
 
         console.log(proxy.a);
+
+        expect(fakeGet).toHaveBeenCalled();
+    });
+
+    it('calls proxy handler when accessing value from proxy 2', () => {
+        const fakeGet = mock.fn();
+        function proxyHandler() {
+            return {
+                get: fakeGet
+            }
+        }
+        const proxy = createProxy({ b: 1 }, proxyHandler);
+
+        console.log(proxy.b);
 
         expect(fakeGet).toHaveBeenCalled();
     });
