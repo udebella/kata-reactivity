@@ -1,16 +1,14 @@
 import {describe, expect, it, mock} from "../deps.test.ts";
 
 function createProxy(param, proxyHandler) {
-    return {
-        get a() {
-            proxyHandler().get();
-            return param.a;
-        },
-        get b() {
-            proxyHandler().get();
-            return param.b;
-        }
-    };
+    return Object.keys(param)
+        .reduce((proxy, key) => Object.defineProperty(proxy, key, {
+            get: () => {
+                proxyHandler().get();
+                return param[key];
+            },
+            enumerable: true
+        }), {});
 }
 
 describe('proxy', () => {
@@ -40,6 +38,18 @@ describe('proxy', () => {
         console.log(proxy.b);
 
         expect(fakeGet).toHaveBeenCalled();
+    });
+
+    it('calls proxy handler when accessing value from proxy 3', () => {
+        const fakeGet = mock.fn();
+        function proxyHandler() {
+            return {
+                get: fakeGet
+            }
+        }
+        const proxy = createProxy({ b: 1 }, proxyHandler);
+
+        expect(proxy).toEqual({ b: 1 });
     });
 
     it('does not call proxy handler when property is not accessed', () => {
