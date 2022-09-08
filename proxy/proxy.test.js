@@ -1,15 +1,16 @@
 import {describe, expect, it, mock} from "../deps.test.ts";
 
 function createProxy(param, proxyHandler) {
+    const coucou = {...param};
     return Object.keys(param)
         .reduce((proxy, key) => Object.defineProperty(proxy, key, {
             get: () => {
                 proxyHandler().get();
-                return param[key];
+                return coucou[key];
             },
             set: (newValue) => {
                 proxyHandler().set();
-                param[key] = newValue;
+                coucou[key] = newValue;
             },
             enumerable: true
         }), {});
@@ -108,6 +109,22 @@ describe('proxy', () => {
             proxy.a = 21;
 
             expect(proxy).toEqual({ a: 21 });
+        });
+
+        it('toto 2', () => {
+            const fakeSet = mock.fn();
+            function proxyHandler() {
+                return {
+                    get: mock.fn(),
+                    set: fakeSet
+                }
+            }
+            const param = { a: 1 };
+            const proxy = createProxy(param, proxyHandler);
+
+            proxy.a = 21;
+
+            expect(param).toEqual({ a: 1 });
         });
     });
 });
