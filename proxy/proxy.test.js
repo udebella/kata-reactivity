@@ -7,8 +7,9 @@ function createProxy(param, proxyHandler) {
                 proxyHandler().get();
                 return param[key];
             },
-            set: () => {
+            set: (newValue) => {
                 proxyHandler().set();
+                param[key] = newValue;
             },
             enumerable: true
         }), {});
@@ -92,6 +93,21 @@ describe('proxy', () => {
             proxy.a = 21;
 
             expect(fakeSet).toHaveBeenCalled();
+        })
+
+        it('toto', () => {
+            const fakeSet = mock.fn();
+            function proxyHandler() {
+                return {
+                    get: mock.fn(),
+                    set: fakeSet
+                }
+            }
+            const proxy = createProxy({ a: 1 }, proxyHandler);
+
+            proxy.a = 21;
+
+            expect(proxy).toEqual({ a: 21 });
         });
     });
 });
